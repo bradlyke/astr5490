@@ -6,7 +6,7 @@ Parameters
 ----------
 None : :class:'float'
 	The program will prompt for user input.
-    On the active menu a character is need.
+    On the active menu a character is needed.
     For each subprogram inputs must be floats.
 
 Returns
