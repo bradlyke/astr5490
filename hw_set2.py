@@ -10,7 +10,7 @@ None : :class:'float'
 	The program will prompt for user input.
     For user choices, use 1/2 or y/n as asked.
     For the initial position/velocity input comma-separated (no spaces)
-      values in floats or scientific notation (meters for R, m/s for V)
+      values in floats or scientific notation (centimeters for R, km/s for V)
 
 Returns
 ----------
@@ -245,7 +245,7 @@ def pos_vel(a,e,Om,i,wom,t,T,bhc,hmag,Ep):
 #right values for the angles. If you choose the first option from the program
 #this is the function called.
 def gen_test_point(a_test,e_test,i_test,w_test,o_test):
-    #Convert the values for a, e, i, w, O into the right units (meters and radians)
+    #Convert the values for a, e, i, w, O into the right units (centimeters and radians)
     a = a_test*mks.au
     e = e_test
     i = i_test*np.pi/180
@@ -303,39 +303,45 @@ def prob2_plotter(pos_array,orb_array,vel_array,t_arr):
     #This plots x,y and X,Y on the same plot so you can see what the rotation
     #does to the ellipse.
     fig2,ax2 = plt.subplots(figsize=(10,8))
-    ax2.scatter(orb_array[:,0],orb_array[:,1],color='magenta',marker='.',label='Orbital Plane')
-    ax2.scatter(pos_array[:,0],pos_array[:,1],color='black',marker='.',label='Observer Plane')
-    ax2.set_xlabel('X-Coordinate (m)',fontsize=15)
-    ax2.set_ylabel('Y-Coordinate (m)',fontsize=15)
+    ax2.scatter(orb_array[:,0]/mks.au,orb_array[:,1]/mks.au,color='magenta',marker='.',label='Orbital Plane')
+    ax2.scatter(pos_array[:,0]/mks.au,pos_array[:,1]/mks.au,color='black',marker='.',label='Observer Plane')
+    ax2.set_xlabel('X-Coordinate (au)',fontsize=15)
+    ax2.set_ylabel('Y-Coordinate (au)',fontsize=15)
     ax2.tick_params(axis='both',direction='in')
     ax2.tick_params(axis='both',which='minor',direction='in')
     ax2.tick_params(top=True,right=True)
     ax2.tick_params(which='minor',top=True,right=True)
+    ax2.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))
+    ax2.yaxis.set_minor_locator(ticker.MultipleLocator(0.1))
     ax2.legend()
 
     #This plots the X(t) and Y(t) just to show the cos/sin offset.
     fig3,ax3 = plt.subplots(figsize=(10,8))
-    ax3.scatter(t_arr,pos_array[:,0],color='black',marker='x',label='X-coord')
-    ax3.scatter(t_arr,pos_array[:,1],color='blue',marker='.',label='Y-coord')
-    ax3.set_xlabel('Time (s)',fontsize=15)
-    ax3.set_ylabel('Position (m)',fontsize=15)
+    ax3.scatter(t_arr/86400,pos_array[:,0]/mks.au,color='black',marker='x',label='X-coord')
+    ax3.scatter(t_arr/86400,pos_array[:,1]/mks.au,color='blue',marker='.',label='Y-coord')
+    ax3.set_xlabel('Time (days)',fontsize=15)
+    ax3.set_ylabel('Position (au)',fontsize=15)
     ax3.tick_params(axis='both',direction='in')
     ax3.tick_params(axis='both',which='minor',direction='in')
     ax3.tick_params(top=True,right=True)
     ax3.tick_params(which='minor',top=True,right=True)
+    ax3.xaxis.set_minor_locator(ticker.MultipleLocator(10))
+    ax3.yaxis.set_minor_locator(ticker.MultipleLocator(0.1))
     ax3.legend()
 
     #This plots the Vz(t) to show there is a non-zero Z-component velocity
     #in the observer reference frame (which would show up as a Vr for the
     #observer on Earth)
     fig4,ax4 = plt.subplots(figsize=(10,8))
-    ax4.scatter(t_arr,vel_array[:,2],color='black',marker='.')
-    ax4.set_xlabel('Time (s)',fontsize=15)
-    ax4.set_ylabel(r'$\textrm{V}_{\textrm{z}}$ (m s$^{-1}$)',fontsize=15)
+    ax4.scatter(t_arr/86400,vel_array[:,2]/1000,color='black',marker='.')
+    ax4.set_xlabel('Time (days)',fontsize=15)
+    ax4.set_ylabel(r'$\textrm{V}_{\textrm{z}}$ (km s$^{-1}$)',fontsize=15)
     ax4.tick_params(axis='both',direction='in')
     ax4.tick_params(axis='both',which='minor',direction='in')
     ax4.tick_params(top=True,right=True)
     ax4.tick_params(which='minor',top=True,right=True)
+    ax4.xaxis.set_minor_locator(ticker.MultipleLocator(10))
+    ax4.yaxis.set_minor_locator(ticker.MultipleLocator(1))
     plt.show()
 
 #This function generates the plots asked for in problem 3. I made up angles
@@ -378,13 +384,15 @@ def prob3_plotter(R0,V0):
             pos_varINC_array[k,:,j],vel_varINC_array[k,:,j] = pos_vec[:],vel_vec[:]
         #Plot this X,Y for the given i. Label them accordinginly.
         plab = 'i = %6.2f$^{\circ}$'%(i_temp*180/np.pi)
-        ax1.scatter(pos_varINC_array[:,0,j],pos_varINC_array[:,1,j],marker='.',label=plab)
-    ax1.set_xlabel('X-Coordinate (m)',fontsize=15)
-    ax1.set_ylabel('Y-Coordinate (m)',fontsize=15)
+        ax1.scatter(pos_varINC_array[:,0,j]/mks.au,pos_varINC_array[:,1,j]/mks.au,marker='.',label=plab)
+    ax1.set_xlabel('X-Coordinate (au)',fontsize=15)
+    ax1.set_ylabel('Y-Coordinate (au)',fontsize=15)
     ax1.tick_params(axis='both',direction='in')
     ax1.tick_params(axis='both',which='minor',direction='in')
     ax1.tick_params(top=True,right=True)
     ax1.tick_params(which='minor',top=True,right=True)
+    ax1.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))
+    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(0.1))
     ax1.legend()
 
     #This bit will iterate through the values of w.
@@ -410,13 +418,15 @@ def prob3_plotter(R0,V0):
             pos_varWOM_array[k,:,j],vel_varWOM_array[k,:,j] = pos_vecw[:],vel_vecw[:]
         #And plot each with the right labels.
         plabWOM = r'$\omega$ = %6.2f$^{\circ}$'%(w_temp*180/np.pi)
-        ax2.scatter(pos_varWOM_array[:,0,j],pos_varWOM_array[:,1,j],marker='.',label=plabWOM)
-    ax2.set_xlabel('X-Coordinate (m)',fontsize=15)
-    ax2.set_ylabel('Y-Coordinate (m)',fontsize=15)
+        ax2.scatter(pos_varWOM_array[:,0,j]/mks.au,pos_varWOM_array[:,1,j]/mks.au,marker='.',label=plabWOM)
+    ax2.set_xlabel('X-Coordinate (au)',fontsize=15)
+    ax2.set_ylabel('Y-Coordinate (au)',fontsize=15)
     ax2.tick_params(axis='both',direction='in')
     ax2.tick_params(axis='both',which='minor',direction='in')
     ax2.tick_params(top=True,right=True)
     ax2.tick_params(which='minor',top=True,right=True)
+    ax2.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))
+    ax2.yaxis.set_minor_locator(ticker.MultipleLocator(0.1))
     ax2.legend()
 
     #Finally generate the plot for variable Omega, given a w = pi/2
@@ -442,13 +452,15 @@ def prob3_plotter(R0,V0):
             pos_varOM_array[k,:,j],vel_varOM_array[k,:,j] = pos_vecO[:],vel_vecO[:]
         #And plot with the right labels.
         plabOM = r'$\Omega$ = %6.2f$^{\circ}$'%(O_temp*180/np.pi)
-        ax3.scatter(pos_varOM_array[:,0,j],pos_varOM_array[:,1,j],marker='.',label=plabOM)
+        ax3.scatter(pos_varOM_array[:,0,j]/mks.au,pos_varOM_array[:,1,j]/mks.au,marker='.',label=plabOM)
     ax3.set_xlabel('X-Coordinate (m)',fontsize=15)
     ax3.set_ylabel('Y-Coordinate (m)',fontsize=15)
     ax3.tick_params(axis='both',direction='in')
     ax3.tick_params(axis='both',which='minor',direction='in')
     ax3.tick_params(top=True,right=True)
     ax3.tick_params(which='minor',top=True,right=True)
+    ax3.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))
+    ax3.yaxis.set_minor_locator(ticker.MultipleLocator(0.1))
     ax3.legend(loc='upper right')
 
     plt.show()
@@ -468,10 +480,10 @@ if __name__=='__main__':
     #be accurate and consistent. Garbage output means input was garbage, not my
     #fault.
     elif tpoint_select == '2':
-        Xus,Yus,Zus = input('Please input X,Y,Z (in meters): ').split(',')
-        Vxs,Vys,Vzs = input('Please input Vx,Vy,Vz (in m/s): ').split(',')
-        R0 = np.array([np.float(Xus),np.float(Yus),np.float(Zus)])
-        V0 = np.array([np.float(Vxs),np.float(Vys),np.float(Vzs)])
+        Xus,Yus,Zus = input('Please input X,Y,Z (in cm): ').split(',')
+        Vxs,Vys,Vzs = input('Please input Vx,Vy,Vz (in km/s): ').split(',')
+        R0 = np.array([np.float(Xus)/100,np.float(Yus)/100,np.float(Zus)/100])
+        V0 = np.array([np.float(Vxs)*1000,np.float(Vys)*1000,np.float(Vzs)*1000])
         Rmag0 = vmag(R0)
         r0 = np.array([Rmag0,0,0])
     #This will print the orbital parameters used, whether back-solved from the
